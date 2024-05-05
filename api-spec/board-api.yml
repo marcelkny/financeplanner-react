@@ -1,0 +1,662 @@
+openapi: 3.0.1
+info:
+  title: MKSERVERMASTER API (frontend)
+  description: 'Internal API for MK-Servermaster Board.'
+  version: 0.1.0
+servers:
+  - url: http://admin.mkservermaster.de
+    description: Local Dev Server
+tags:
+- name: authentication
+  description: User Account Management
+- name: status
+  description: Status and Health check
+- name: gallery
+  description: Gallery Functions
+  
+  
+paths:
+  /status/ping:
+    get:
+      tags:
+      - status
+      summary: ping / pong
+      operationId: statusPing
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    default: "Pong"
+  
+  /ext/auth/login:
+    post:
+      security: []
+      tags:
+      - authentication
+      summary: account login
+      operationId: logintoAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCredentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiLoginResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /ext/auth/logout:
+    post:
+      tags:
+      - authentication
+      summary: account logout
+      operationId: logoutofAccount
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiLogoutResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+                
+  /ext/auth/settings:
+    post:
+      tags:
+        - authentication
+      summary: get content for settings page
+      operationId: getSettingsContents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsPageContentRequest'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsPageContentResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+                
+  /ext/auth/settings/save/contentlevel:
+    post:
+      tags:
+        - authentication
+      summary: save contentlevel from settings page
+      operationId: saveContentLevelSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GalleryUploadDataCredentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiLoginResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+  /ext/auth/updateCredentials:
+    post:
+      tags:
+        - authentication
+      summary: update customer credentials
+      operationId: updateCredentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateCredentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiDashboardResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+                
+  /ext/gallery:
+    post:
+      tags:
+        - gallery
+      summary: update customer credentials
+      operationId: getGalleryImages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GalleryRequestCredentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryImagePageResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+                
+  /ext/gallery/upload/data:
+    post:
+      tags:
+        - gallery
+      summary: get data necessary for upload form
+      operationId: getGalleryUploadData
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GalleryUploadDataCredentials'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryUploadDataResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+  /ext/gallery/upload/upload:
+    post:
+      tags:
+        - gallery
+      summary: upload images to gallery
+      operationId: uploadImagesToGallery
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GalleryImageUploadMultiform'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiDashboardResponse'
+        400:
+          description: Invalid Account Credentials supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        405:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+  
+  
+security:
+  - bearerAuth: [] 
+  - clientHeader: []
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+
+    clientHeader:
+      type: apiKey
+      in: header
+      name: "Client"
+
+  schemas:
+    AccountCredentials:
+      type: object
+      required:
+        - emailaddress
+        - password
+      properties:
+        emailaddress:
+          type: string
+        password:
+          type: string
+          
+    AccountUpdateCredentials:
+      type: object
+      required:
+        - userName
+        - emailAddress
+        - config
+        - password
+      properties:
+        userName:
+          type: string
+        emailAddress:
+          type: string
+        config:
+          type: string
+        password:
+          type: string
+
+    ApiErrorResponse:
+        type: object
+        properties:
+          code:
+            type: integer
+            format: int32
+          type:
+            type: string
+          message:
+            type: string 
+          
+    ApiDashboardResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        data:
+          $ref: "#/components/schemas/ApiDashboardResponseData"   
+
+    ApiDashboardResponseData:
+      type: object
+      properties:
+        token:
+          type: string
+        result:
+          type: object 
+          
+    ApiGenericResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        data:
+          type: object  
+
+    ApiLoginResponse:
+      type: object
+      required:
+        - code
+        - type
+        - data
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        data:
+          $ref: "#/components/schemas/ApiLoginResponseData"
+
+    ApiLoginResponseData:
+      type: object
+      required:
+        - tokenInfo
+        - userInfo
+        - jwt
+        - result
+      properties:
+        tokenInfo:
+          $ref: "#/components/schemas/tokenInfo"  
+        userInfo:
+          $ref: "#/components/schemas/userInfo"
+        result:
+          type: object
+
+    ApiLogoutResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        data:
+          type: object  
+    
+    GalleryUploadDataCredentials:
+      type: object
+      required:
+        - user_id
+        - userContentLevel
+      properties:
+        user_id:
+          type: string
+        userContentLevel:
+          type: number
+
+    GalleryRequestCredentials:
+      type: object
+      required:
+        - user_id
+        - userContentLevel
+        - imageKeywords
+      properties:
+        user_id:
+          type: string
+        userContentLevel:
+          type: number
+        imageKeywords:
+          type: array
+          items:
+            type:
+              string
+    
+    GalleryImagePageResponse:
+      type: object
+      properties:
+        code:
+          type: number
+        type:
+          type: string
+        data:
+          $ref: '#/components/schemas/galleryResponseData'
+    
+    galleryResponseData:
+      type: object
+      properties:
+        images: 
+          $ref: '#/components/schemas/galleryPaginationData'
+        keyData:
+          $ref: '#/components/schemas/keyData'
+    
+    keyData:
+      type: object
+      required:
+        - dict
+        - arr
+      properties:
+        dict:
+          $ref: '#/components/schemas/galleryKeywordDict'
+        arr:
+          type: array
+          items:
+            $ref: '#/components/schemas/galleryKeyword'
+    
+    
+      
+    galleryKeywordDict:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/galleryKeyword"
+    
+    GalleryUploadDataResponse:
+      type: object
+      properties:
+        code:
+          type: number
+        type:
+          type: string
+        data:
+          $ref: '#/components/schemas/GalleryUploadDataResponseData'
+    GalleryUploadDataResponseData:
+      type: object
+      required:
+        - keyData
+        - contentLevels
+      properties:
+        contentLevels:
+          $ref: '#/components/schemas/contentLevelArray'
+        keyData:
+          $ref: '#/components/schemas/keyData'
+
+    GalleryImageUploadMultiform:
+      type: object
+      required:
+        - user_id
+        - content_level
+        - keys
+        - files
+      properties:
+        user_id:
+          type: string
+        content_level:
+          type: number
+        keys:
+          type: array
+          items:
+            type: string
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+              
+    galleryKeyword:
+      type: object
+      required:
+        - id
+        - keyword
+        - contentLevel_id
+        - keycategory_id
+        - user_id
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+        keyword: 
+          type: string
+        contentLevel_id: 
+          type: number
+        keycategory_id: 
+          type: string
+        user_id: 
+          type: string
+        created_at: 
+          type: string
+        updated_at: 
+          type: string
+        image_id: 
+          type: string
+    
+    galleryPaginationData:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/galleryImageArray"
+    
+    galleryImageArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/galleryImage'
+    
+    galleryImage:
+      type: object
+      required:
+        - id
+        - galleryId
+        - contentLevel_id
+        - file
+        - path
+      properties:
+        galleryId:
+          type: number
+        contentLevel_id: 
+          type: number
+        file: 
+          type: string
+        id:
+          type: string
+        path: 
+          type: string
+    
+    contentLevelArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/contentLevelItem'
+      
+    contentLevelItem:
+      type: object
+      required:
+        - id
+        - contentlevelname
+        - contentlevel
+      properties:
+        id:
+          type: 
+            string
+        contentlevelname:
+          type: 
+            string
+        contentlevel:
+          type: 
+            number
+            
+    SettingsPageContentRequest:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: string
+          
+    SettingsPageContentResponse:
+      type: object
+      required:
+        - contentLevels
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        data:
+          $ref: "#/components/schemas/contentLevelArray" 
+        
+    
+    tokenInfo:
+      type: object
+      required:
+        - token
+        - expiration
+        - timestamp
+        - jwt
+      properties:
+        token:
+          type: string
+        expiration:
+          type: string
+        timestamp:
+          type: string
+        jwt:
+          type: string
+
+    userInfo:
+      type: object
+      required:
+        - user_id
+        - username
+        - mail
+        - config
+        - userContentLevel
+        - maxContentLevel
+      properties:
+        user_id: 
+          type: string
+        username:
+          type: string
+        mail:
+          type: string
+        config:
+          type: string
+        userContentLevel:
+          type: number
+        maxContentLevel:
+          type: number
