@@ -1,46 +1,47 @@
-import { useState } from "react";
+import bcrypt from "bcryptjs";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ApiLoginResponse, AuthenticationApi } from "../../client/board-api";
-import { AppStatusSet, useAppContext } from "../../context/AppContext";
 import { SessionSetUserSession, useSession } from "../../context/SessionContext";
-import useBoardApiConfiguration from "../../hooks/useBoardApiConfiguration";
-import { PasswordInput, TextInput } from "./input/Input";
+import UserRepository from "../../repositories/User.Repository";
 import { FormButton } from "../buttons/FormButton";
-import { TextLink } from "../text/TextLink";
+import { PasswordInput, TextInput } from "./input/Input";
+import { dispatchNavigationInfo } from "../../utils/dispatchNavigationInfo";
+import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
 
 export function LoginForm() {
-    const [, dispatchAppState] = useAppContext();
     const [, dispatchSessionState] = useSession();
-    const apiConfig = useBoardApiConfiguration();
     const navigate = useNavigate();
 
     // const [loginstate, setLogin] = useState(false);
     const [user, setUser] = useState<string>("");
     const [pass, setPass] = useState<string>("");
-
+    const [, dispatchNavInfo] = useNavigationContext();
+    const navigationCallback = useCallback(() => {
+        const navAction = NavigationSetUserNavigation({ id: "login", title: "Login", return_id: null });
+        dispatchNavInfo(navAction);
+    }, [dispatchNavigationInfo]);
+    useEffect(() => {
+        navigationCallback();
+    }, [navigationCallback]);
     const changeUser = (event: React.FormEvent<HTMLInputElement>) => {
         setUser(event.currentTarget.value);
     };
     const changePass = (event: React.FormEvent<HTMLInputElement>) => {
         setPass(event.currentTarget.value);
     };
-    const Login = () => {
-        new AuthenticationApi(apiConfig)
-            .logintoAccount({ AccountCredentials: { emailaddress: user, password: pass } })
-            .then((obj: ApiLoginResponse) => {
-                console.log(obj);
-                if (obj.code === 200) {
-                    const sessionAction = SessionSetUserSession(obj.data.userInfo, obj.data.tokenInfo);
-                    dispatchSessionState(sessionAction);
-
-                }
-                navigate("/");
-            })
-            .catch((err: unknown) => {
-                console.error(err);
-                console.error("damn");
-                dispatchAppState(AppStatusSet("error", "Login fehlgeschlagen", "E-Mail-Adresse oder Passwort ist falsch", "/account/login"));
-            });
+    const Login = async () => {
+        const authResult = await new UserRepository().getUserByEmail(user);
+        const userResult = authResult[0];
+        const token = authResult[1];
+        const password = userResult.password;
+        if (bcrypt.compareSync(pass, password) === true) {
+            const userInfo = { user_id: userResult.id, username: userResult.name, mail: user };
+            const tokenInfo = { token: token };
+            const sessionAction = SessionSetUserSession(userInfo, tokenInfo);
+            dispatchSessionState(sessionAction);
+            // setLogin(true);
+            navigate("/transactions");
+        }
     };
     return (
         <div className="w-1/2 md:w-fit mx-auto text-gray-300 pt-8">
@@ -61,9 +62,9 @@ export function LoginForm() {
                     <FormButton onClick={Login} value={"Anmelden"} customStyle={"hover:cursor-pointer text-xl"} />
                 </div>
             </div>
-            <div className="w-fit m-auto pt-8 text-center">
+            {/* <div className="w-fit m-auto pt-8 text-center">
                 <TextLink caption={"Passwort vergessen?"} href={"/account/reset"} />
-            </div>
+            </div> */}
         </div>
     );
 }

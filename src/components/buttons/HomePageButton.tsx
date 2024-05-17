@@ -16,7 +16,7 @@ export default function HomePageButton({ caption, href }: { caption: string; hre
                 navTo(href);
             }}
         >
-            <button className="text-4xl">{caption}</button>
+            <button className="text-xl">{caption}</button>
         </div>
     );
 }

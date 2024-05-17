@@ -8,19 +8,13 @@ export interface SessionUserInfo {
     user_id: string;
     username: string;
     mail: string;
-    config: string;
-    userContentLevel: number;
-    maxContentLevel: number;
 }
 
 /**
  * Session Token Info Type
  */
 export interface SessionTokenInfo {
-    timestamp: string;
-    expiration: string;
     token: string;
-    jwt: string;
 }
 
 export interface SessionState {
@@ -89,9 +83,6 @@ export const initialSessionState: SessionState = {
         user_id: "",
         username: "",
         mail: "",
-        config: "",
-        userContentLevel: 0,
-        maxContentLevel: 0
     },
 };
 

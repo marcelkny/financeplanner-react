@@ -1,24 +1,18 @@
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCurrentNavigation } from "../../context/NavigationContext";
 import NavMenuWide from "../menues/NavMenuWide";
+import { HeaderBackNavigation } from "./HeaderBackNavigation";
 
 export default function Header() {
-    const navigate = useNavigate();   
-    
+    const navInfo = useCurrentNavigation();
+
     return (
-        <div className="bg-[rgb(15,15,30)] flex items-center text-gray-100 px-4">
-            <div
-                className="flex items-center px-2 py-2 mr-2 hover:cursor-pointer"
-                onClick={() => {
-                    navigate("/");
-                }}
-            >
-                <div className="w-8 h-8">
-                    <img src="/vite.svg" alt="" />
-                </div>
-                <div className="px-2 text-2xl">
-                    Server<span className="font-semibold">Master</span>
-                </div>
+        <div className="bg-[rgb(15,15,30)] flex items-center text-gray-100 px-2">
+            <div>
+                <HeaderBackNavigation target_id={navInfo.return_id} title={navInfo.title} />
             </div>
+
             <NavMenuWide />
         </div>
     );

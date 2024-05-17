@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SessionReset, useIsLoggedIn, useSession } from "../../context/SessionContext";
-import NavMenuButton from "../buttons/NavMenuButton";
+import { authClear } from "../../utils/backend-auth";
 import MenuIcon from "../icons/MenuIcon";
 
 export default function NavMenuWide() {
@@ -12,35 +12,28 @@ export default function NavMenuWide() {
     const handleOpen = useCallback(() => {
         setOpen(!open);
     }, [open]);
-    const Logout = useCallback(() => {
+    const Logout = useCallback(async() => {
         const sessionAction = SessionReset();
         dispatchSessionState(sessionAction);
+        await authClear();
         localStorage.clear();
         // new AccountApi(apiConfig).logoutofAccount().then(() => {
         //     navTo("/account/login");
         // });
         console.log("Logout()");
-        navigate("/");
+        navigate("/login");
     }, [dispatchSessionState, navigate]);
     return (
         <div className="w-full flex justify-between">
             {isLoggedIn === true ? (
-                <div className="flex items-center gap-4">
-                    <NavMenuButton caption="Gallery" href="/gallery" />
-                </div>
+                <div></div>
             ) : (
                 <div></div>
             )}
 
             <div>
                 {isLoggedIn === false ? (
-                    <button
-                        onClick={() => {
-                            navigate("/login");
-                        }}
-                    >
-                        Login
-                    </button>
+                    undefined
                 ) : (
                     <div>
                         <button onClick={handleOpen}>
