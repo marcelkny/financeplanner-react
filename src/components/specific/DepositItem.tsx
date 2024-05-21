@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DepositAmountModel } from "../../models/deposit.model";
+import { LoadingReset } from "../../context/LoadingContext";
 
 export function DepositItem({ item, href }: { item: DepositAmountModel; href: string }) {
     const [amountClass, setAmountClass] = useState("");
     const navigate = useNavigate();
     const navTo = useCallback(
         (target: string) => {
+            LoadingReset();
             navigate(target);
         },
         [navigate]

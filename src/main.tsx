@@ -11,6 +11,7 @@ import MainStoreProvider from "./components/store-provider/MainStoreProvider";
 import SettingsView from "./views/home/SettingsView";
 import { NavigationProvider } from "./context/NavigationContext";
 import { TransactionView } from "./views/finance/TransactionView";
+import { LoadingProvider } from "./context/LoadingContext";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -48,7 +49,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <AppContextProvider>
             <MainStoreProvider>
                 <NavigationProvider>
+                    <LoadingProvider>
                     <RouterProvider router={router} />
+                    </LoadingProvider>
                 </NavigationProvider>
             </MainStoreProvider>
         </AppContextProvider>

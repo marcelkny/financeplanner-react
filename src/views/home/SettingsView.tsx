@@ -2,13 +2,17 @@
 import { useCallback, useEffect, useState } from "react";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import { useSession } from "../../context/SessionContext";
+import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
 
 export default function SettingsView() {
     const [pass1, setPass1] = useState<string>("");
     const [pass2, setPass2] = useState<string>("");
     const [passWasChanged, setPassWasChanged] = useState<boolean>(false);
+    const [, dispatchNavInfo] = useNavigationContext();
 
     const reloadCallback = useCallback(() => {
+        const navAction = NavigationSetUserNavigation({ id: "settings", title: "Einstellungen", return_id: "home" });
+        dispatchNavInfo(navAction);
         // console.log("reloadCallback()");
     }, []);
     useEffect(() => {

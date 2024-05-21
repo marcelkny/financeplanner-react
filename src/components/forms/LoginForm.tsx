@@ -40,7 +40,7 @@ export function LoginForm() {
             const sessionAction = SessionSetUserSession(userInfo, tokenInfo);
             dispatchSessionState(sessionAction);
             // setLogin(true);
-            navigate("/transactions");
+            navigate("/");
         }
     };
     return (
