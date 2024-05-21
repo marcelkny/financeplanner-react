@@ -7,9 +7,12 @@ import { FormButton } from "../buttons/FormButton";
 import { PasswordInput, TextInput } from "./input/Input";
 import { dispatchNavigationInfo } from "../../utils/dispatchNavigationInfo";
 import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
+import { LoadingSetLoadingScreen, useLoadingContext } from "../../context/LoadingContext";
+import { error } from "console";
 
 export function LoginForm() {
     const [, dispatchSessionState] = useSession();
+    const [loadingContext, dispatchIsLoading] = useLoadingContext();
     const navigate = useNavigate();
 
     // const [loginstate, setLogin] = useState(false);
@@ -19,6 +22,8 @@ export function LoginForm() {
     const navigationCallback = useCallback(() => {
         const navAction = NavigationSetUserNavigation({ id: "login", title: "Login", return_id: null });
         dispatchNavInfo(navAction);
+        const isLoadingPrepare = LoadingSetLoadingScreen({ isLoading: false });
+        dispatchIsLoading(isLoadingPrepare);
     }, [dispatchNavigationInfo]);
     useEffect(() => {
         navigationCallback();
@@ -30,18 +35,27 @@ export function LoginForm() {
         setPass(event.currentTarget.value);
     };
     const Login = async () => {
-        const authResult = await new UserRepository().getUserByEmail(user);
-        const userResult = authResult[0];
-        const token = authResult[1];
-        const password = userResult.password;
-        if (bcrypt.compareSync(pass, password) === true) {
-            const userInfo = { user_id: userResult.id, username: userResult.name, mail: user };
-            const tokenInfo = { token: token };
-            const sessionAction = SessionSetUserSession(userInfo, tokenInfo);
-            dispatchSessionState(sessionAction);
-            // setLogin(true);
-            navigate("/");
-        }
+        new UserRepository()
+            .getUserByEmail(user)
+            .then((authResult) => {
+                console.log("user: ", authResult)
+                const userResult = authResult[0];
+                const token = authResult[1];
+                const password = userResult.password;
+                if (bcrypt.compareSync(pass, password) === true) {
+                    const userInfo = { user_id: userResult.id, username: userResult.name, mail: user };
+                    const tokenInfo = { token: token };
+                    const sessionAction = SessionSetUserSession(userInfo, tokenInfo);
+                    dispatchSessionState(sessionAction);
+                    // setLogin(true);
+                    navigate("/");
+                } else {
+                    throw new Error("Authentication failed")
+                }
+            })
+            .catch((error: Error) => {
+                console.error(error);
+            });
     };
     return (
         <div className="w-1/2 md:w-fit mx-auto text-gray-300 pt-8">
