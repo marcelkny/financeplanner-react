@@ -12,6 +12,7 @@ import SettingsView from "./views/home/SettingsView";
 import { NavigationProvider } from "./context/NavigationContext";
 import { TransactionView } from "./views/finance/TransactionView";
 import { LoadingProvider } from "./context/LoadingContext";
+import { TransactionAddView } from "./views/finance/TransactionAddView";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -37,6 +38,14 @@ const router = createBrowserRouter(
                 element={
                     <ProtectedRoute>
                         <TransactionView />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/transaction/new"
+                element={
+                    <ProtectedRoute>
+                        <TransactionAddView />
                     </ProtectedRoute>
                 }
             />

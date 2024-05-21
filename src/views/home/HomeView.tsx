@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import HomePageButton from "../../components/buttons/HomePageButton";
-import DepositRepository from "../../repositories/deposit.repository";
+import { DepositItem } from "../../components/specific/DepositItem";
+import { LoadingSetLoadingScreen, useLoadingContext } from "../../context/LoadingContext";
+import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
 import { useSession } from "../../context/SessionContext";
 import { DepositAmountModelArray, DepositModelArray } from "../../models/deposit.model";
-import { DepositItem } from "../../components/specific/DepositItem";
 import TransactionRepository from "../../repositories/Transaction.Repository";
-import { NavigationInfo, NavigationSetUserNavigation, NavigationState, useNavigationContext } from "../../context/NavigationContext";
-import { dispatchNavigationInfo } from "../../utils/dispatchNavigationInfo";
-import { LoadingSetLoadingScreen, useIsLoading, useLoadingContext } from "../../context/LoadingContext";
+import DepositRepository from "../../repositories/deposit.repository";
 
 export default function HomeView() {
     const [, dispatchNavInfo] = useNavigationContext();
