@@ -8,7 +8,7 @@ import MenuIcon from "../icons/MenuIcon";
 
 const slideMenuCenterItems: BottomSlideMenuItem[] = [
     {
-        caption: "Neue Trannsaktion",
+        caption: "Neue Transaktion",
         funcionType: "nav",
         target: "/transaction/new",
     },
@@ -30,7 +30,7 @@ export default function Footer() {
     const [menuActive, setMenuActive] = useState(false);
     const [slideMenuItems, setSlideMenuItems] = useState<BottomSlideMenuItem[]>([]);
     const isLoggedIn = useIsLoggedIn();
-    const [currentItemsType, setCurrentItemsType] = useState<string>("");
+    const [currentItemsType, setCurrentItemsType] = useState<string>("center");
 
     const toggleMenu = () => {
         console.log("should be: ", !menuActive);
@@ -50,10 +50,11 @@ export default function Footer() {
                 default:
                     return;
             }
-            if(itemsType === currentItemsType ) {
+            if(menuActive === false || (menuActive === true && itemsType === currentItemsType)) {
                 toggleMenu();
             }
             setCurrentItemsType(itemsType);
+            
             
         };
     return (

@@ -3,12 +3,14 @@ import { useSearchParams } from "react-router-dom";
 import { TransactionItem } from "../../components/specific/TransactionItem";
 import { useSession } from "../../context/SessionContext";
 import { TransactionViewModel } from "../../models/transactionview.model";
-import TransactionRepository from "../../repositories/Transaction.Repository";
+import TransactionRepository from "../../repositories/transaction.repository";
 import { dispatchNavigationInfo } from "../../utils/dispatchNavigationInfo";
 import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
+import { LoadingSetLoadingScreen, useLoadingContext } from "../../context/LoadingContext";
 
 export function TransactionView() {
     const [session] = useSession();
+    const [loadingContext, dispatchIsLoading] = useLoadingContext();
     const [searchParams, setSearchParams] = useSearchParams();
     const [totalBalance, setTotalBalance] = useState(0);
     const [deposit_id] = useState<string | null>(searchParams.get("id"));
@@ -29,6 +31,8 @@ export function TransactionView() {
                         balance += deposit.amount;
                     }
                     setTotalBalance(balance);
+                    const isLoadingPrepare = LoadingSetLoadingScreen({ isLoading: false });
+                    dispatchIsLoading(isLoadingPrepare);
                 })
                 .catch((err) => {
                     console.error("error: ", err);

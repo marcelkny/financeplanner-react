@@ -2,19 +2,28 @@ import { useNavigate } from "react-router-dom";
 import { useCurrentNavigation } from "../../context/NavigationContext";
 import { useCallback } from "react";
 import ArrowLeftIcon from "../icons/ArrowLeftIcon";
+import { LoadingReset, useLoadingContext } from "../../context/LoadingContext";
 
 export function HeaderBackNavigation({ target_id, title }: { target_id: string | null; title: string | null }) {
+    const [loadingContext, dispatchIsLoading] = useLoadingContext();
     const navigate = useNavigate();
     const navInfo = useCurrentNavigation();
     const navTo = useCallback(
         (target: string | null) => {
-            const navTarget = (target && target === null) || target === "" ? "/" : `/${navInfo.return_id}`;
-            console.log("navTarget: ", target);
-            if (window.history?.length && window.history.length > 1) {
-                navigate(-1);
-             } else {
-                navigate('/', { replace: true });
-             }
+            try {
+                const navTarget = (target && target === null) || target === "" ? "/" : `/${navInfo.return_id}`;
+                console.log("navTarget: ", target);
+                const loadingAction = LoadingReset();
+                dispatchIsLoading(loadingAction);
+                if (window.history?.length && window.history.length > 1) {
+                    navigate(-1);
+                } else {
+                    navigate("/", { replace: true });
+                }
+            } catch (error) {
+                navigate("/");
+            }
+
             // navigate(navTarget);
         },
         [navigate]

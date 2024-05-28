@@ -4,8 +4,8 @@ import { LoadingSetLoadingScreen, useLoadingContext } from "../../context/Loadin
 import { NavigationSetUserNavigation, useNavigationContext } from "../../context/NavigationContext";
 import { useSession } from "../../context/SessionContext";
 import { DepositAmountModelArray, DepositModelArray } from "../../models/deposit.model";
-import TransactionRepository from "../../repositories/Transaction.Repository";
 import DepositRepository from "../../repositories/deposit.repository";
+import TransactionRepository from "../../repositories/transaction.repository";
 
 export default function HomeView() {
     const [, dispatchNavInfo] = useNavigationContext();

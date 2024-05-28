@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SessionSetUserSession, useSession } from "../../context/SessionContext";
-import UserRepository from "../../repositories/User.Repository";
+import UserRepository from "../../repositories/user.repository";
 import { FormButton } from "../buttons/FormButton";
 import { PasswordInput, TextInput } from "./input/Input";
 import { dispatchNavigationInfo } from "../../utils/dispatchNavigationInfo";
